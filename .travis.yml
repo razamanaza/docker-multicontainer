@@ -1,0 +1,20 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t razamanaza/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true razamanaza/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t razamanaza/multi-client ./client
+  - docker build -t razamanaza/multi-nginx ./nginx
+  - docker build -t razamanaza/multi-server ./server
+  - docker build -t razamanaza/multi-worker ./worker
+  - echo "$DOCKER_PASS" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push razamanaza/multi-client
+  - docker push razamanaza/multi-nginx
+  - docker push razamanaza/multi-server
+  - docker push razamanaza/multi-worker
