@@ -28,10 +28,9 @@ pgClient
 const redis = require('redis');
 const redisClient = redis.createClient({
   host: keys.redisHost,
-  port: keys.redisPort/,
+  port: keys.redisPort,
   retry_strategy: () => 1000
 });
-redisClient.config("SET", "save", "");
 const redisPublisher = redisClient.duplicate();
 
 // Express route handlers
@@ -54,17 +53,14 @@ app.get('/values/current', async (req, res) => {
 
 app.post('/values', async (req, res) => {
   const index = req.body.index;
+
   if (parseInt(index) > 40) {
     return res.status(422).send('Index too high');
   }
 
-  redisClient.hset('values', index, '');
+  redisClient.hset('values', index, 'Nothing yet!');
   redisPublisher.publish('insert', index);
   pgClient.query('INSERT INTO values(number) VALUES($1)', [index]);
-
-  redisPublisher.on("error", function () {
-    console.log('publish erro');
-  });
 
   res.send({ working: true });
 });
