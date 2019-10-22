@@ -18,3 +18,16 @@ after_success:
   - docker push razamanaza/multi-nginx
   - docker push razamanaza/multi-server
   - docker push razamanaza/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: southeast-2
+  app: docker-mulit
+  env: DockerMulit-env
+  bucket_name: elasticbeanstalk-ap-southeast-2-732741982513
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
