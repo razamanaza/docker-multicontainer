@@ -12,6 +12,7 @@ function App() {
         <header className="App">
           <div>
             <img src={logo} className="App-logo" alt="logo" />
+            <h1>Fibb Calculator</h1>
           </div>
           <Link to="/">Home</Link>
           <br></br>
